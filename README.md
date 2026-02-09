@@ -90,3 +90,4 @@ Ensure you are using the latest version of this module and that the `external_id
 ## Credits
 - Based on the original work by [death-droid](https://github.com/death-droid) and [Stepas](https://github.com/Stepas).
 - Enhanced and modernized for Pterodactyl 1.x and Lagom theme integration.
+- Developed/Upgraded by the https://nebuliton.io Team.
