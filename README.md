@@ -6,7 +6,7 @@ Advanced WHMCS Module for the [Pterodactyl Panel](https://github.com/pterodactyl
 - **Live Console:** Real-time terminal access via WebSockets.
 - **Power Actions:** Start, Restart, Stop, and Kill buttons directly in WHMCS.
 - **Dynamic Design:** Automatic Light/Dark mode detection (supports Lagom theme).
-- **Internationalization:** Fully localized in **English** and **German**.
+- **Internationalization:** Fully localized in **English** and **German**, **Danish**, **Italian**, **Russian**, **French**. **Dutch**.
 - **Management Tabs:** Manage Network (Allocations), Databases, Backups, and Startup variables.
 - **Security:** Built-in CSRF protection for all AJAX operations.
 - **Centralized Config:** Addon module for global API settings.
