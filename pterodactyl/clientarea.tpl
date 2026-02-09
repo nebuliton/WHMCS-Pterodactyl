@@ -365,6 +365,24 @@
         scrollbar-width: thin;
         scrollbar-color: var(--ptero-border) var(--ptero-bg);
     }
+
+    /* Terminal Scrollbar (always dark) */
+    .terminal-container ::-webkit-scrollbar {
+        background-color: #1a1a1a !important;
+    }
+    .terminal-container ::-webkit-scrollbar-track {
+        background-color: #1a1a1a !important;
+    }
+    .terminal-container ::-webkit-scrollbar-thumb {
+        background-color: #555 !important;
+        border: 2px solid #1a1a1a !important;
+    }
+    .terminal-container ::-webkit-scrollbar-thumb:hover {
+        background-color: #777 !important;
+    }
+    .terminal-container, .terminal-container * {
+        scrollbar-color: #555 #1a1a1a !important;
+    }
 </style>
 
 <div class="pterodactyl-container">
