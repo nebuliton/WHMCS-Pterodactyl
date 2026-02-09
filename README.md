@@ -62,6 +62,7 @@ The module uses a Client API token to fetch WebSocket authentication details.
 ## Overwriting values through configurable options
 
 Overwriting values can be done through either Configurable Options or Custom Fields.
+- You can set the API Keys also via Code in the pterodactyl.php file.
 
 Their name should be exactly what you want to overwrite.
 `dedicated_ip` => Will overwrite dedicated_ip if its ticked or not.
@@ -80,6 +81,10 @@ This can be caused by: Wrong location ID, not enough disk space/CPU/RAM on nodes
 
 ### The server gets assigned to the first/admin user
 Ensure you are using the latest version of this module and that the `external_id` is correctly passed to Pterodactyl.
+
+### Changing the default colors
+You can change from the default whitemode to darkmode in the clientarea.tpl file under "pteroDefaultTheme".
+It detects the lagom dark/white mode automatically.
 
 ### How to enable module debug log
 1. Navigate to **System Logs -> Module Log**.
