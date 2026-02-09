@@ -8,7 +8,7 @@ $_ADDONLANG = [
     'client_api_key' => 'Cl&eacute; d\'API client administrateur',
     'client_api_key_description' => 'Une cl&eacute; d\'API client d\'un administrateur (Compte -> API) pour acc&eacute;der &agrave; tous les serveurs. Alternativement, cela peut &ecirc;tre stock&eacute; dans le champ \'Access Hash\' du serveur.',
     'admin_management_title' => 'Gestion de l\'addon Pterodactyl',
-    'config_incomplete' => 'Configuration incomplète !',
+    'config_incomplete' => 'Configuration incompl&egrave;te !',
     'config_incomplete_desc' => 'Veuillez vous assurer que toutes les cl&eacute;s API sont d&eacute;finies dans les <a href="configaddonmods.php" class="alert-link">param&egrave;tres de l\'addon</a> ou fournies dans le code.',
     
     // Client Area
