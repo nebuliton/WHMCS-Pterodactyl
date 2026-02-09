@@ -18,8 +18,7 @@ Advanced WHMCS Module for the [Pterodactyl Panel](https://github.com/pterodactyl
 ## Installation
 
 1. **Upload Files:**
-   - Move the `modules/addons/pterodactyl/` folder into `<path to whmcs>/modules/addons/`.
-   - Move the `modules/servers/pterodactyl/` folder into `<path to whmcs>/modules/servers/`.
+   - Move the `/pterodactyl/` folder into `<path to whmcs>/modules/servers/`.
 2. **Activate Addon:**
    - In WHMCS navigate to **System Settings -> Addon Modules** (WHMCS 8+) or **Setup -> Addon Modules** (WHMCS 7).
    - Activate **Pterodactyl Addon** and configure access permissions.
