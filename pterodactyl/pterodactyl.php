@@ -146,28 +146,74 @@ function pterodactyl_GetHostname(array $params) {
 }
 
 function pterodactyl_GetLang(array $params) {
-    global $_ADDONLANG;
-    if (isset($_ADDONLANG) && is_array($_ADDONLANG) && !empty($_ADDONLANG)) {
-        return $_ADDONLANG;
-    }
-    
-    $lang = 'english';
-    if (isset($params['language'])) {
+    $lang = '';
+    if (isset($params['language']) && is_string($params['language'])) {
         $lang = $params['language'];
-    } elseif (isset($_SESSION['Language'])) {
+    } elseif (isset($params['lang']) && is_string($params['lang'])) {
+        $lang = $params['lang'];
+    } elseif (isset($_SESSION['Language']) && is_string($_SESSION['Language'])) {
         $lang = $_SESSION['Language'];
+    } elseif (isset($GLOBALS['CONFIG']['Language']) && is_string($GLOBALS['CONFIG']['Language'])) {
+        $lang = $GLOBALS['CONFIG']['Language'];
     }
     
-    $langFile = __DIR__ . '/lang/' . strtolower($lang) . '.php';
+    if (!$lang) {
+        $lang = 'english';
+    }
+    
+    $lang = strtolower(trim($lang));
+    
+    // Static cache per language to avoid redundant includes and mapping
+    static $langCache = [];
+    if (isset($langCache[$lang])) return $langCache[$lang];
+    
+    // 1. Try direct match
+    if (file_exists(__DIR__ . '/lang/' . $lang . '.php')) {
+        $match = $lang;
+    } else {
+        // 2. Try common mappings
+        $mapping = [
+            'russian' => 'russian', 'ru' => 'russian',
+            'french' => 'french', 'fr' => 'french',
+            'italian' => 'italian', 'it' => 'italian',
+            'danish' => 'danish', 'da' => 'danish',
+            'dutch' => 'dutch', 'nl' => 'dutch', 'nederlands' => 'dutch',
+            'german' => 'german', 'de' => 'german', 'deutsch' => 'german',
+            'english' => 'english', 'en' => 'english'
+        ];
+        
+        $match = 'english';
+        if (isset($mapping[$lang])) {
+            $match = $mapping[$lang];
+        } else {
+            $short = substr($lang, 0, 2);
+            if (isset($mapping[$short])) {
+                $match = $mapping[$short];
+            }
+        }
+    }
+
+    $langFile = __DIR__ . '/lang/' . $match . '.php';
     if (!file_exists($langFile)) {
         $langFile = __DIR__ . '/lang/english.php';
     }
     
+    $_LANG = [];
+    $_ADDONLANG = [];
     if (file_exists($langFile)) {
         include $langFile;
     }
     
-    return $_ADDONLANG;
+    $langCache[$lang] = !empty($_ADDONLANG) ? $_ADDONLANG : $_LANG;
+    
+    // Convert to entities for WHMCS compatibility if not already done
+    foreach ($langCache[$lang] as $key => $value) {
+        if (is_string($value)) {
+            $langCache[$lang][$key] = mb_encode_numericentity($value, [0x80, 0x10ffff, 0, 0xffffff], 'UTF-8');
+        }
+    }
+
+    return $langCache[$lang];
 }
 
 function pterodactyl_API(array $params, $endpoint, array $data = [], $method = "GET", $dontLog = false) {
