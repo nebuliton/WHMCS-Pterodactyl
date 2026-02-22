@@ -343,25 +343,25 @@
         border-bottom-right-radius: 12px !important;
     }
     
-    /* Scrollbar */
-    ::-webkit-scrollbar {
+    /* Scrollbar (Container only) */
+    .pterodactyl-container ::-webkit-scrollbar {
         width: 10px;
         background-color: var(--ptero-bg);
     }
-    ::-webkit-scrollbar-track {
+    .pterodactyl-container ::-webkit-scrollbar-track {
         background-color: var(--ptero-bg);
     }
-    ::-webkit-scrollbar-thumb {
+    .pterodactyl-container ::-webkit-scrollbar-thumb {
         background-color: var(--ptero-border);
         border-radius: 5px;
         border: 2px solid var(--ptero-bg);
     }
-    ::-webkit-scrollbar-thumb:hover {
+    .pterodactyl-container ::-webkit-scrollbar-thumb:hover {
         background-color: var(--ptero-text-muted);
     }
     
-    /* Firefox Support */
-    * {
+    /* Firefox Support (Container only) */
+    .pterodactyl-container {
         scrollbar-width: thin;
         scrollbar-color: var(--ptero-border) var(--ptero-bg);
     }
