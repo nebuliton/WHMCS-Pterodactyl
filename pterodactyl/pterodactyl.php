@@ -552,13 +552,17 @@ function pterodactyl_CreateAccount(array $params) {
                     'external_id' => (string) $params['clientsdetails']['id'],
                 ], 'POST');
             } else {
+                $found = false;
                 foreach($userResult['data'] as $key => $value) {
                     if($value['attributes']['email'] === $params['clientsdetails']['email']) {
-                        $userResult = array_merge($userResult, $value);
+                        $userResult = array_merge($userResult, (array) $value);
+                        $found = true;
                         break;
                     }
                 }
-                $userResult = array_merge($userResult, $userResult['data'][0]);
+                if (!$found && isset($userResult['data'][0])) {
+                    $userResult = array_merge($userResult, (array) $userResult['data'][0]);
+                }
             }
         }
 
