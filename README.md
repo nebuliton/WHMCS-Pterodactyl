@@ -8,7 +8,7 @@
 <h1 align="center">🚀 Pterodactyl WHMCS Module (Extended) 🚀</h1>
 
 <p align="center">
-  <b>The most advanced WHMCS module for <a href="https://github.com/pterodactyl/panel/">Pterodactyl</a> – with live console, power management & dynamic design!</b>
+  <b>An advanced WHMCS module for <a href="https://github.com/pterodactyl/panel/">Pterodactyl</a> – with live console, power management & dynamic design!</b>
 </p>
 
 <p align="center">
