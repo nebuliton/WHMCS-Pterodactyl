@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://nebuliton.io" target="_blank"><img src="https://img.shields.io/badge/Built%20by-nebuliton.io-6c47ff?style=for-the-badge&logo=cloudsmith" alt="nebuliton.io" /></a>
-  <a href="https://discord.gg/5dPWBFbMUS" target="_blank"><img src="https://img.shields.io/discord/1200000000000000000?label=Discord%20Support&logo=discord&style=for-the-badge&color=5865F2" alt="Discord Support" /></a>
+  <a href="https://discord.gg/5dPWBFbMUS" target="_blank"><img src="https://img.shields.io/discord/1385385189521227826?label=Discord%20Support&logo=discord&style=for-the-badge&color=5865F2" alt="Discord Support" /></a>
 </p>
 
 ---
