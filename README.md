@@ -1,21 +1,49 @@
-# Pterodactyl WHMCS Module (Extended)
+<!-- NEBULITON PROMO BLOCK -->
+<p align="center">
+  <a href="https://nebuliton.io" target="_blank">
+    <img src="https://nebuliton.io/logo.png" alt="nebuliton.io Logo" width="180" />
+  </a>
+</p>
 
-Advanced WHMCS Module for the [Pterodactyl Panel](https://github.com/pterodactyl/panel/) with live console, power management, and dynamic theme support.
+<h1 align="center">🚀 Pterodactyl WHMCS Module (Extended) 🚀</h1>
 
-## Features
-- **Live Console:** Real-time terminal access via WebSockets.
-- **Power Actions:** Start, Restart, Stop, and Kill buttons directly in WHMCS.
-- **Dynamic Design:** Automatic Light/Dark mode detection (supports Lagom theme).
-- **Internationalization:** Fully localized in **English** and **German**, **Danish**, **Italian**, **Russian**, **French**. **Dutch**.
-- **Management Tabs:** Manage Network (Allocations), Databases, Backups, and Startup variables.
-- **Security:** Built-in CSRF protection for all AJAX operations.
-- **Centralized Config:** Addon module for global API settings.
+<p align="center">
+  <b>The most advanced WHMCS module for <a href="https://github.com/pterodactyl/panel/">Pterodactyl</a> – with live console, power management & dynamic design!</b>
+</p>
 
-## Requirements
-- Pterodactyl Panel version 1.0.0 and above.
-- WHMCS 8.x (recommended) or WHMCS 7.x.
+<p align="center">
+  <a href="https://nebuliton.io" target="_blank"><img src="https://img.shields.io/badge/Built%20by-nebuliton.io-6c47ff?style=for-the-badge&logo=cloudsmith" alt="nebuliton.io" /></a>
+  <a href="https://discord.gg/5dPWBFbMUS" target="_blank"><img src="https://img.shields.io/discord/1200000000000000000?label=Discord%20Support&logo=discord&style=for-the-badge&color=5865F2" alt="Discord Support" /></a>
+</p>
 
-## Installation
+---
+
+<p align="center">
+  <a href="https://nebuliton.io" target="_blank"><b>🌐 Powered by nebuliton.io – Your partner for modern hosting solutions!</b></a>
+</p>
+
+---
+
+## ✨ Features
+
+- 🖥️ **Live Console:** Real-time terminal access via WebSockets
+- ⚡ **Power Actions:** Start, Restart, Stop, and Kill buttons directly in WHMCS
+- 🎨 **Dynamic Design:** Automatic Light/Dark mode detection (Lagom theme supported)
+- 🌍 **Internationalization:** Fully localized in **English**, **German**, **Danish**, **Italian**, **Russian**, **French**, **Dutch**
+- 🗂️ **Management Tabs:** Manage Network (Allocations), Databases, Backups, and Startup variables
+- 🛡️ **Security:** Built-in CSRF protection for all AJAX operations
+- ⚙️ **Centralized Config:** Addon module for global API settings
+
+---
+
+## 📦 Requirements
+
+- 🐦 Pterodactyl Panel **v1.0.0+**
+- 🧩 WHMCS **8.x** (recommended) or **7.x**
+
+---
+
+## 🛠️ Installation
 
 1. **Upload Files:**
    - Move the `/pterodactyl/` folder into `<path to whmcs>/modules/servers/`.
@@ -41,31 +69,31 @@ Advanced WHMCS Module for the [Pterodactyl Panel](https://github.com/pterodactyl
    - In **Module Settings**, choose **Pterodactyl** and select your server group.
    - Fill in the required fields (Nest ID, Egg ID, etc.).
 
-## WebSocket & Console Setup
+---
 
-To enable the live console and real-time status updates:
+## 🔌 WebSocket & Console Setup
 
-### 1. Configure Allowed Origins (Wings)
+### 1️⃣ Configure Allowed Origins (Wings)
 The browser needs permission to connect to the Wings WebSocket from your WHMCS domain.
-- Navigate to your **Pterodactyl Panel -> Settings -> General**.
+- Go to your **Pterodactyl Panel -> Settings -> General**.
 - Find the **Allowed Origins** field.
 - Add your WHMCS URL (e.g., `https://whmcs.yourdomain.com`).
 - Save the settings. Wings will now accept WebSocket connections from your WHMCS site.
 
-### 2. Create Client API Token
+### 2️⃣ Create Client API Token
 The module uses a Client API token to fetch WebSocket authentication details.
 - Log into your Pterodactyl Panel as an **Administrator**.
-- Navigate to **Account -> API** (Top right user menu).
+- Go to **Account -> API** (Top right user menu).
 - Create a new API Key.
 - Copy this key and paste it into the **Pterodactyl Addon settings** in WHMCS (Field: Admin Client API Key) or into the server's **Access Hash** field.
 
-## Overwriting values through configurable options
+---
+
+## ⚙️ Overwriting values through configurable options
 
 Overwriting values can be done through either Configurable Options or Custom Fields.
-- You can set the API Keys also via Code in the pterodactyl.php file.
-
-Their name should be exactly what you want to overwrite.
-`dedicated_ip` => Will overwrite dedicated_ip if its ticked or not.
+- You can set the API Keys also via code in the `pterodactyl.php` file.
+- Their name should be exactly what you want to overwrite (e.g., `dedicated_ip`).
 
 **Valid options:**
 `server_name, memory, swap, io, cpu, disk, nest_id, egg_id, pack_id, location_id, dedicated_ip, port_range, image, startup, databases, allocations, backups, oom_disabled, username`
@@ -74,25 +102,50 @@ Their name should be exactly what you want to overwrite.
 You can also overwrite environment variables. Use the variable name (e.g., `PLAYER_SLOTS`) or the friendly name.
 Example: `PLAYER_SLOTS|Player Slots`
 
-## FAQ
+---
 
-### Couldn't find any nodes satisfying the request
+## ❓ FAQ
+
+<details>
+<summary>❌ <b>Couldn't find any nodes satisfying the request</b></summary>
 This can be caused by: Wrong location ID, not enough disk space/CPU/RAM on nodes, or no allocations matching the provided criteria.
+</details>
 
-### The server gets assigned to the first/admin user
+<details>
+<summary>👤 <b>The server gets assigned to the first/admin user</b></summary>
 Ensure you are using the latest version of this module and that the `external_id` is correctly passed to Pterodactyl.
+</details>
 
-### Changing the default colors
-You can change from the default whitemode to darkmode in the clientarea.tpl file under "pteroDefaultTheme".
-It detects the lagom dark/white mode automatically.
+<details>
+<summary>🎨 <b>Changing the default colors</b></summary>
+You can change from the default whitemode to darkmode in the `clientarea.tpl` file under "pteroDefaultTheme". It detects the Lagom dark/white mode automatically.
+</details>
 
-### How to enable module debug log
-1. Navigate to **System Logs -> Module Log**.
+<details>
+<summary>🐞 <b>How to enable module debug log</b></summary>
+1. Go to **System Logs -> Module Log**.
 2. Click **Enable Debug Logging**.
 3. Perform the action that failed.
 4. Review the logs for "Pterodactyl-WHMCS" entries.
+</details>
 
-## Credits
-- Based on the original work by [death-droid](https://github.com/death-droid) and [Stepas](https://github.com/Stepas).
-- Enhanced and modernized for Pterodactyl 1.x and Lagom theme integration.
-- Developed/Upgraded by the https://nebuliton.io Team.
+---
+
+## 👥 Support & Community
+
+- 💬 **Discord Support:** [Join now!](https://nebuliton.io/go/discord)
+- 🌐 **Learn more:** [nebuliton.io](https://nebuliton.io)
+
+---
+
+## 🙏 Credits
+
+- Based on the original work by [death-droid](https://github.com/death-droid) and [Stepas](https://github.com/Stepas)
+- Enhanced and modernized for Pterodactyl 1.x and Lagom theme integration
+- Developed/Upgraded by the [nebuliton.io](https://nebuliton.io) Team
+
+---
+
+<p align="center">
+  <b>🚀 Ready for the future of hosting? <a href="https://nebuliton.io" target="_blank">Try nebuliton.io now!</a> 🚀</b>
+</p>
