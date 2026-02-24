@@ -2,6 +2,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/addons/fit/fit.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
     :root {
@@ -342,6 +343,54 @@
         border-top-right-radius: 12px !important;
         border-bottom-right-radius: 12px !important;
     }
+
+    .resource-card {
+        background: var(--ptero-input-bg);
+        border: 1px solid var(--ptero-border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        min-height: 92px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .resource-card-wide {
+        width: 100%;
+    }
+    .resource-label {
+        color: var(--ptero-text-muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+    .resource-value {
+        color: var(--ptero-text);
+        font-size: 1.12rem;
+        font-weight: 700;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+    .resource-chart-card {
+        background: var(--ptero-input-bg);
+        border: 1px solid var(--ptero-border);
+        border-radius: 12px;
+        padding: 12px;
+        height: 300px;
+    }
+    .resource-chart-title {
+        color: var(--ptero-text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin: 0 0 8px 0;
+        font-weight: 600;
+    }
+    .resource-chart-card canvas {
+        width: 100% !important;
+        height: 245px !important;
+    }
     
     /* Scrollbar (Container only) */
     .pterodactyl-container ::-webkit-scrollbar {
@@ -403,6 +452,9 @@
             <a class="nav-link active" id="console-tab" data-toggle="tab" href="#console" role="tab">{$lang.console}</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" id="resources-tab" data-toggle="tab" href="#resources" role="tab">{$lang.resources|default:'Resources'}</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab">{$lang.settings}</a>
         </li>
         <li class="nav-item">
@@ -444,6 +496,73 @@
                 <input type="text" id="console-input" class="form-control" placeholder="{$lang.send_command}">
                 <div class="input-group-append">
                     <button class="btn btn-primary" id="send-command">{$lang.send}</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="resources" role="tabpanel">
+            <div class="row">
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="resource-card">
+                        <div class="resource-label">{$lang.resource_cpu|default:'CPU'}</div>
+                        <div class="resource-value" id="resource-cpu">0%</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="resource-card">
+                        <div class="resource-label">{$lang.resource_memory|default:'Memory'}</div>
+                        <div class="resource-value" id="resource-memory">0 MB</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="resource-card">
+                        <div class="resource-label">{$lang.resource_disk|default:'Disk'}</div>
+                        <div class="resource-value" id="resource-disk">0 MB</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="resource-card">
+                        <div class="resource-label">{$lang.resource_network|default:'Network'}</div>
+                        <div class="resource-value" id="resource-network">0 KiB/s</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <div class="resource-card">
+                        <div class="resource-label">{$lang.resource_uptime|default:'Uptime'}</div>
+                        <div class="resource-value" id="resource-uptime">0s</div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-6 mb-3 d-flex align-items-stretch">
+                    <div class="resource-card resource-card-wide">
+                        <div class="resource-label">{$lang.resource_updated|default:'Last update'}</div>
+                        <div class="resource-value" id="resource-updated">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="resource-chart-card">
+                        <h5 class="resource-chart-title">{$lang.resource_cpu_history|default:'CPU Usage'}</h5>
+                        <canvas id="chart-cpu"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="resource-chart-card">
+                        <h5 class="resource-chart-title">{$lang.resource_memory_history|default:'Memory Usage'}</h5>
+                        <canvas id="chart-memory"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="resource-chart-card">
+                        <h5 class="resource-chart-title">{$lang.resource_disk_history|default:'Disk Usage'}</h5>
+                        <canvas id="chart-disk"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="resource-chart-card">
+                        <h5 class="resource-chart-title">{$lang.resource_network_history|default:'Network Throughput'}</h5>
+                        <canvas id="chart-network"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -641,6 +760,221 @@ $(document).ready(function() {
     const identifier = '{/literal}{$identifier}{literal}';
     const pteroToken = $('#ptero_token').val();
     let socket = null;
+    const t = (key, fallback) => (lang && lang[key]) ? lang[key] : fallback;
+    const maxResourcePoints = 180;
+    let resourcePollTimer = null;
+    let lastResourceState = null;
+    const resourceHistory = [];
+    const resourceCharts = {
+        cpu: null,
+        memory: null,
+        disk: null,
+        network: null
+    };
+
+    function formatUptime(totalSeconds) {
+        const seconds = Math.max(0, parseInt(totalSeconds || 0, 10));
+        const days = Math.floor(seconds / 86400);
+        const hours = Math.floor((seconds % 86400) / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+        if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+        if (minutes > 0) return `${minutes}m ${secs}s`;
+        return `${secs}s`;
+    }
+
+    function getChartTheme() {
+        const dark = checkDarkMode();
+        return {
+            tick: dark ? '#d8d8d8' : '#5f6b77',
+            grid: dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)'
+        };
+    }
+
+    function createResourceChart(canvasId, color, label) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || typeof Chart === 'undefined') return null;
+
+        const theme = getChartTheme();
+        return new Chart(canvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: label,
+                    data: [],
+                    borderColor: color,
+                    backgroundColor: color + '33',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 3,
+                    fill: true,
+                    tension: 0.25
+                }]
+            },
+            options: {
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: theme.tick,
+                            maxTicksLimit: 6
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: theme.tick
+                        },
+                        grid: {
+                            color: theme.grid
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function initResourceCharts() {
+        if (resourceCharts.cpu) return;
+        resourceCharts.cpu = createResourceChart('chart-cpu', '#00c853', t('resource_cpu_history', 'CPU Usage'));
+        resourceCharts.memory = createResourceChart('chart-memory', '#1e88e5', t('resource_memory_history', 'Memory Usage'));
+        resourceCharts.disk = createResourceChart('chart-disk', '#ff8f00', t('resource_disk_history', 'Disk Usage'));
+        resourceCharts.network = createResourceChart('chart-network', '#8e24aa', t('resource_network_history', 'Network Throughput'));
+    }
+
+    function updateResourceChartTheme() {
+        const theme = getChartTheme();
+        Object.keys(resourceCharts).forEach(function(key) {
+            const chart = resourceCharts[key];
+            if (!chart) return;
+            chart.options.scales.x.ticks.color = theme.tick;
+            chart.options.scales.y.ticks.color = theme.tick;
+            chart.options.scales.y.grid.color = theme.grid;
+            chart.update('none');
+        });
+    }
+
+    function renderResourceCards(sample) {
+        $('#resource-cpu').text(sample.cpu.toFixed(2) + '%');
+        $('#resource-memory').text(sample.memoryMb.toFixed(2) + ' MB');
+        $('#resource-disk').text(sample.diskMb.toFixed(2) + ' MB');
+        $('#resource-network').text(sample.networkKiBS.toFixed(2) + ' KiB/s');
+        $('#resource-uptime').text(formatUptime(sample.uptime));
+        $('#resource-updated').text(new Date(sample.ts).toLocaleString());
+    }
+
+    function renderResourceCharts() {
+        initResourceCharts();
+        const labels = resourceHistory.map(item => item.label);
+
+        if (resourceCharts.cpu) {
+            resourceCharts.cpu.data.labels = labels;
+            resourceCharts.cpu.data.datasets[0].data = resourceHistory.map(item => item.cpu);
+            resourceCharts.cpu.update('none');
+        }
+        if (resourceCharts.memory) {
+            resourceCharts.memory.data.labels = labels;
+            resourceCharts.memory.data.datasets[0].data = resourceHistory.map(item => item.memoryMb);
+            resourceCharts.memory.update('none');
+        }
+        if (resourceCharts.disk) {
+            resourceCharts.disk.data.labels = labels;
+            resourceCharts.disk.data.datasets[0].data = resourceHistory.map(item => item.diskMb);
+            resourceCharts.disk.update('none');
+        }
+        if (resourceCharts.network) {
+            resourceCharts.network.data.labels = labels;
+            resourceCharts.network.data.datasets[0].data = resourceHistory.map(item => item.networkKiBS);
+            resourceCharts.network.update('none');
+        }
+    }
+
+    function pushResourcePoint(resources) {
+        if (!resources) return;
+        const now = Date.now();
+        const rx = Number(resources.network_rx_bytes || 0);
+        const tx = Number(resources.network_tx_bytes || 0);
+        const totalNetwork = rx + tx;
+
+        let networkRate = 0;
+        if (lastResourceState && now > lastResourceState.ts && totalNetwork >= lastResourceState.totalNetwork) {
+            const deltaBytes = totalNetwork - lastResourceState.totalNetwork;
+            const deltaSeconds = (now - lastResourceState.ts) / 1000;
+            networkRate = deltaSeconds > 0 ? (deltaBytes / deltaSeconds) / 1024 : 0;
+        }
+
+        lastResourceState = {
+            ts: now,
+            totalNetwork: totalNetwork
+        };
+
+        const sample = {
+            ts: now,
+            label: new Date(now).toLocaleTimeString(),
+            cpu: Number(resources.cpu_absolute || 0),
+            memoryMb: Number(resources.memory_bytes || 0) / 1048576,
+            diskMb: Number(resources.disk_bytes || 0) / 1048576,
+            networkKiBS: networkRate,
+            uptime: Number(resources.uptime || 0)
+        };
+
+        resourceHistory.push(sample);
+        if (resourceHistory.length > maxResourcePoints) {
+            resourceHistory.shift();
+        }
+
+        renderResourceCards(sample);
+        if ($('#resources').hasClass('active')) {
+            renderResourceCharts();
+        }
+    }
+
+    function normalizeResourcePayload(payload) {
+        if (!payload) return null;
+        if (payload.attributes && payload.attributes.resources) return payload.attributes.resources;
+        if (payload.data && payload.data.attributes && payload.data.attributes.resources) return payload.data.attributes.resources;
+        if (payload.resources) return payload.resources;
+        return payload.memory_bytes !== undefined ? payload : null;
+    }
+
+    function loadResources() {
+        $.getJSON(window.location.href, {modaction: 'get_resources', token: pteroToken, _: new Date().getTime()}, function(data) {
+            const normalized = normalizeResourcePayload(data);
+            if (normalized) {
+                pushResourcePoint(normalized);
+            }
+        });
+    }
+
+    function startResourcePolling() {
+        if (resourcePollTimer) return;
+        loadResources();
+        resourcePollTimer = setInterval(loadResources, 5000);
+    }
+
+    function stopResourcePolling() {
+        if (resourcePollTimer) {
+            clearInterval(resourcePollTimer);
+            resourcePollTimer = null;
+        }
+    }
+
     Terminal.applyAddon(fit);
     
     let term = new Terminal({
@@ -657,7 +991,13 @@ $(document).ready(function() {
     term.open(document.getElementById('terminal'));
 
     // Regular check for dynamic changes (e.g. Lagom Switcher without reload)
-    setInterval(checkDarkMode, 2000);
+    setInterval(function() {
+        const currentThemeState = checkDarkMode();
+        if (currentThemeState !== isDark) {
+            isDark = currentThemeState;
+            updateResourceChartTheme();
+        }
+    }, 2000);
 
     setTimeout(function() {
         term.fit();
@@ -702,7 +1042,20 @@ $(document).ready(function() {
                             term.writeln(msg.args[0]);
                             break;
                         case 'stats':
-                            // Stats can be handled here if needed
+                            if (msg.args && msg.args[0]) {
+                                let statPayload = msg.args[0];
+                                if (typeof statPayload === 'string') {
+                                    try {
+                                        statPayload = JSON.parse(statPayload);
+                                    } catch (e) {
+                                        statPayload = null;
+                                    }
+                                }
+                                const normalizedStats = normalizeResourcePayload(statPayload);
+                                if (normalizedStats) {
+                                    pushResourcePoint(normalizedStats);
+                                }
+                            }
                             break;
                         case 'token expired':
                             connectWebsocket();
@@ -790,6 +1143,13 @@ $(document).ready(function() {
     // Tab loading
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         const target = $(e.target).attr("href");
+        if (target === '#resources') {
+            initResourceCharts();
+            startResourcePolling();
+            renderResourceCharts();
+        } else {
+            stopResourcePolling();
+        }
         if (target === '#startup') loadStartup();
         if (target === '#network') loadNetwork();
         if (target === '#databases') loadDatabases();

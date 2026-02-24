@@ -28,11 +28,13 @@
 
 - 🖥️ **Live Console:** Real-time terminal access via WebSockets
 - ⚡ **Power Actions:** Start, Restart, Stop, and Kill buttons directly in WHMCS
+- 📊 **Resource Monitoring:** Dedicated **Resources** tab with live CPU, Memory, Disk and Network charts
 - 🎨 **Dynamic Design:** Automatic Light/Dark mode detection (Lagom theme supported)
 - 🌍 **Internationalization:** Fully localized in **English**, **German**, **Danish**, **Italian**, **Russian**, **French**, **Dutch**
-- 🗂️ **Management Tabs:** Manage Network (Allocations), Databases, Backups, and Startup variables
+- 🗂️ **Management Tabs:** Manage Resources, Network (Allocations), Databases, Backups, and Startup variables
 - 🛡️ **Security:** Built-in CSRF protection for all AJAX operations
-- ⚙️ **Centralized Config:** Addon module for global API settings
+- ⚙️ **Centralized Config:** Addon module for global API settings (editable directly in Addon admin page)
+- 🧾 **Usage Metering:** Syncs Disk and Bandwidth usage into WHMCS service usage fields
 
 ---
 
@@ -52,6 +54,7 @@
    - Activate **Pterodactyl Addon** and configure access permissions.
 3. **Configure API Credentials:**
    - Go to **Addons -> Pterodactyl Addon**.
+   - Open the **API Settings** section in the addon admin page.
    - Enter your **Pterodactyl URL** (e.g., `https://panel.example.com`).
    - Enter an **Application API Key** (Generated in Admin -> API with all permissions).
    - Enter an **Admin Client API Key** (See "Client API Token" below).
@@ -86,6 +89,13 @@ The module uses a Client API token to fetch WebSocket authentication details.
 - Go to **Account -> API** (Top right user menu).
 - Create a new API Key.
 - Copy this key and paste it into the **Pterodactyl Addon settings** in WHMCS (Field: Admin Client API Key) or into the server's **Access Hash** field.
+
+---
+
+## 📈 Usage Metering & Resource Graphs
+
+- The client area includes a **Resources** tab with live usage cards and history charts.
+- The module implements WHMCS **UsageUpdate** to keep Disk/Bandwidth usage in sync with Pterodactyl resource data.
 
 ---
 

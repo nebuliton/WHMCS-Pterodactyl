@@ -71,14 +71,85 @@ function pterodactyl_output($vars) {
     $_ADDONLANG = pterodactyl_GetLang($vars);
     $config = pterodactyl_GetConfig();
     $modulelink = $vars['modulelink'];
-    
+    $saveFeedback = '';
+    $saveFeedbackClass = 'success';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_pterodactyl_settings'])) {
+        try {
+            if (empty($_SESSION['adminid'])) {
+                throw new Exception('Admin session required.');
+            }
+            if (function_exists('check_token')) {
+                check_token('WHMCS.admin.default');
+            }
+
+            $apiUrlInput = trim((string) ($_POST['api_url'] ?? ''));
+            $appKeyInput = trim((string) ($_POST['application_api_key'] ?? ''));
+            $clientKeyInput = trim((string) ($_POST['client_api_key'] ?? ''));
+
+            if ($apiUrlInput === '' && !empty($config['api_url'])) {
+                $apiUrlInput = $config['api_url'];
+            }
+            if ($appKeyInput === '' && !empty($config['application_api_key'])) {
+                $appKeyInput = $config['application_api_key'];
+            }
+            if ($clientKeyInput === '' && !empty($config['client_api_key'])) {
+                $clientKeyInput = $config['client_api_key'];
+            }
+
+            pterodactyl_SaveConfigValue('api_url', rtrim($apiUrlInput, '/'));
+            pterodactyl_SaveConfigValue('application_api_key', $appKeyInput);
+            pterodactyl_SaveConfigValue('client_api_key', $clientKeyInput);
+
+            $config = pterodactyl_GetConfig();
+            $saveFeedback = $_ADDONLANG['admin_settings_saved'] ?? 'Settings saved successfully.';
+            $saveFeedbackClass = 'success';
+        } catch (Exception $e) {
+            $saveFeedback = ($_ADDONLANG['admin_settings_save_failed'] ?? 'Failed to save settings:') . ' ' . $e->getMessage();
+            $saveFeedbackClass = 'danger';
+        }
+    }
+
     $apiUrl = !empty($config['api_url']) ? $config['api_url'] : $pterodactyl_default_api_url;
     $appKey = !empty($config['application_api_key']) ? $config['application_api_key'] : $pterodactyl_default_application_api_key;
     $clientKey = !empty($config['client_api_key']) ? $config['client_api_key'] : $pterodactyl_default_client_api_key;
+    $apiUrlEscaped = htmlspecialchars((string) $apiUrl, ENT_QUOTES, 'UTF-8');
 
     echo '<div class="addon-admin-container">';
     echo '<h3>' . $_ADDONLANG['admin_management_title'] . '</h3>';
-    
+
+    if ($saveFeedback !== '') {
+        echo '<div class="alert alert-' . $saveFeedbackClass . '"><i class="fas fa-info-circle"></i> ' . $saveFeedback . '</div>';
+    }
+
+    echo '<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">' . ($_ADDONLANG['admin_api_settings'] ?? 'API Settings') . '</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" action="' . htmlspecialchars((string) $modulelink, ENT_QUOTES, 'UTF-8') . '">
+                    <input type="hidden" name="save_pterodactyl_settings" value="1" />
+                    ' . (function_exists('generate_token') ? generate_token('plain') : '') . '
+                    <div class="form-group">
+                        <label for="ptero_api_url"><strong>' . ($_ADDONLANG['api_url'] ?: 'Pterodactyl URL') . '</strong></label>
+                        <input type="text" class="form-control" id="ptero_api_url" name="api_url" value="' . $apiUrlEscaped . '" placeholder="https://panel.example.com" />
+                        <p class="help-block">' . ($_ADDONLANG['api_url_description'] ?: '') . '</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ptero_application_api_key"><strong>' . ($_ADDONLANG['application_api_key'] ?: 'Application API Key') . '</strong></label>
+                        <input type="password" class="form-control" id="ptero_application_api_key" name="application_api_key" value="" autocomplete="new-password" placeholder="' . ($_ADDONLANG['admin_keep_existing_secret'] ?? 'Leave empty to keep current key.') . '" />
+                        <p class="help-block">' . ($_ADDONLANG['application_api_key_description'] ?: '') . '</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="ptero_client_api_key"><strong>' . ($_ADDONLANG['client_api_key'] ?: 'Admin Client API Key') . '</strong></label>
+                        <input type="password" class="form-control" id="ptero_client_api_key" name="client_api_key" value="" autocomplete="new-password" placeholder="' . ($_ADDONLANG['admin_keep_existing_secret'] ?? 'Leave empty to keep current key.') . '" />
+                        <p class="help-block">' . ($_ADDONLANG['client_api_key_description'] ?: '') . '</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> ' . ($_ADDONLANG['save'] ?: 'Save') . '</button>
+                </form>
+            </div>
+          </div>';
+
     if (empty($apiUrl) || empty($appKey) || empty($clientKey)) {
         echo '<div class="alert alert-warning">
                 <i class="fas fa-exclamation-triangle"></i> 
@@ -120,6 +191,22 @@ function pterodactyl_GetConfig() {
     return $config;
 }
 
+function pterodactyl_SaveConfigValue($setting, $value) {
+    $query = Capsule::table('tbladdonmodules')
+        ->where('module', 'pterodactyl')
+        ->where('setting', $setting);
+
+    if ($query->exists()) {
+        $query->update(['value' => (string) $value]);
+    } else {
+        Capsule::table('tbladdonmodules')->insert([
+            'module' => 'pterodactyl',
+            'setting' => $setting,
+            'value' => (string) $value,
+        ]);
+    }
+}
+
 function pterodactyl_GetHostname(array $params) {
     global $pterodactyl_default_api_url;
     $config = pterodactyl_GetConfig();
@@ -139,8 +226,10 @@ function pterodactyl_GetHostname(array $params) {
         $hostname = str_replace($from, $to, $hostname);
     }
 
-    if(ip2long($hostname) !== false) $hostname = 'http://' . $hostname;
-    else $hostname = ($params['serversecure'] ? 'https://' : 'http://') . $hostname;
+    if (!preg_match('#^https?://#i', $hostname)) {
+        if (ip2long($hostname) !== false) $hostname = 'http://' . $hostname;
+        else $hostname = ($params['serversecure'] ? 'https://' : 'http://') . $hostname;
+    }
 
     return rtrim($hostname, '/');
 }
@@ -842,6 +931,72 @@ function pterodactyl_ChangePackage(array $params) {
     }
 
     return 'success';
+}
+
+function pterodactyl_UsageUpdate(array $params) {
+    try {
+        $services = Capsule::table('tblhosting')
+            ->join('tblproducts', 'tblproducts.id', '=', 'tblhosting.packageid')
+            ->where('tblhosting.server', (int) $params['serverid'])
+            ->where('tblproducts.servertype', 'pterodactyl')
+            ->whereIn('tblhosting.domainstatus', ['Active', 'Suspended'])
+            ->select('tblhosting.id as serviceid', 'tblhosting.userid')
+            ->get();
+
+        foreach ($services as $service) {
+            $serviceParams = $params;
+            $serviceParams['serviceid'] = (int) $service->serviceid;
+            $serviceParams['userid'] = (int) $service->userid;
+
+            try {
+                $serverData = pterodactyl_GetServerID($serviceParams, true);
+                if (
+                    !isset($serverData['attributes']['identifier']) ||
+                    !isset($serverData['attributes']['limits'])
+                ) {
+                    continue;
+                }
+
+                $identifier = $serverData['attributes']['identifier'];
+                $usageResult = pterodactyl_ClientAPI($serviceParams, 'servers/' . $identifier . '/resources', [], 'GET', true);
+                if (
+                    !isset($usageResult['status_code']) ||
+                    (int) $usageResult['status_code'] !== 200 ||
+                    !isset($usageResult['attributes']['resources'])
+                ) {
+                    continue;
+                }
+
+                $resources = $usageResult['attributes']['resources'];
+                $diskBytes = isset($resources['disk_bytes']) ? (float) $resources['disk_bytes'] : 0;
+                $networkRx = isset($resources['network_rx_bytes']) ? (float) $resources['network_rx_bytes'] : 0;
+                $networkTx = isset($resources['network_tx_bytes']) ? (float) $resources['network_tx_bytes'] : 0;
+
+                $diskUsageMb = round($diskBytes / 1048576, 2);
+                $bandwidthUsageMb = round(($networkRx + $networkTx) / 1048576, 2);
+                $diskLimitMb = isset($serverData['attributes']['limits']['disk']) ? (float) $serverData['attributes']['limits']['disk'] : 0;
+
+                Capsule::table('tblhosting')
+                    ->where('id', (int) $service->serviceid)
+                    ->update([
+                        'diskusage' => $diskUsageMb,
+                        'disklimit' => $diskLimitMb > 0 ? $diskLimitMb : 0,
+                        'bwusage' => $bandwidthUsageMb,
+                        'bwlimit' => 0,
+                        'lastupdate' => date('Y-m-d H:i:s'),
+                    ]);
+            } catch (Exception $innerErr) {
+                logModuleCall(
+                    'Pterodactyl-WHMCS-UsageUpdate',
+                    'Service ' . (int) $service->serviceid,
+                    '',
+                    $innerErr->getMessage()
+                );
+            }
+        }
+    } catch (Exception $err) {
+        logModuleCall("Pterodactyl-WHMCS-UsageUpdate", __FUNCTION__, $params, $err->getMessage(), $err->getTraceAsString());
+    }
 }
 
 function pterodactyl_LoginLink(array $params) {
